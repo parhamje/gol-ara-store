@@ -39,7 +39,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 
 export default function App() {
   return (
-    <BrowserRouter basename="/">
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <ScrollToTop />
       <ToastContainer position="bottom-left" rtl={true} autoClose={3000} theme="light" />
       <CartDrawer />

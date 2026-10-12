@@ -9,7 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://parhamjenani.ir/projects/golara/"><img src="https://img.shields.io/badge/Live%20Demo-Visit%20Website-ff2d78?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Live Demo" /></a>
+  <a href="https://parhamje.github.io/gol-ara-store/"><img src="https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-22c55e?style=for-the-badge&logo=githubpages&logoColor=white" alt="GitHub Pages Live Demo" /></a>
+  <a href="https://parhamjenani.ir/projects/golara/"><img src="https://img.shields.io/badge/Custom%20Host-Live%20Website-ff2d78?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Live Website" /></a>
   <a href="https://github.com/parhamje/gol-ara-store"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo" /></a>
 </p>
 
@@ -24,9 +25,10 @@
 
 ---
 
-## 🔗 Live Demo
+## 🔗 Live Demos
 Experience the live application here:  
-👉 **[https://parhamjenani.ir/projects/golara/](https://parhamjenani.ir/projects/golara/)**
+- 🌐 **GitHub Pages (Direct Demo)**: [https://parhamje.github.io/gol-ara-store/](https://parhamje.github.io/gol-ara-store/)  
+- 🌸 **Production Host**: [https://parhamjenani.ir/projects/golara/](https://parhamjenani.ir/projects/golara/)
 
 ---
 
