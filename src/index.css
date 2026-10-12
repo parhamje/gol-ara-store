@@ -2,8 +2,6 @@
    Global Styles — Persian Makeup Shop
    ═══════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -30,7 +28,6 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
-  direction: rtl;
   scroll-behavior: smooth;
 }
 
@@ -287,7 +284,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.35; }
   border-radius: 1rem !important;
   box-shadow: 0 10px 25px rgba(212, 87, 138, 0.15) !important;
   border: 1px solid rgba(212, 87, 138, 0.1) !important;
-  direction: rtl;
 }
 .Toastify__toast-body {
   font-weight: 700 !important;

@@ -17,7 +17,7 @@ const useAuthStore = create(
                 name: 'مدیر کل',
                 email,
                 role: 'admin',
-                avatar: 'https://i.pravatar.cc/150?u=admin'
+                avatar: import.meta.env.BASE_URL + 'images/default-avatar.svg'
               };
               set({ user: adminUser, isAuthenticated: true });
               resolve(adminUser);
@@ -27,7 +27,7 @@ const useAuthStore = create(
                 name: 'کاربر تستی',
                 email,
                 role: 'user',
-                avatar: 'https://i.pravatar.cc/150?u=user'
+                avatar: import.meta.env.BASE_URL + 'images/default-avatar.svg'
               };
               set({ user: normalUser, isAuthenticated: true });
               resolve(normalUser);
@@ -47,7 +47,7 @@ const useAuthStore = create(
                 name,
                 email,
                 role: 'user',
-                avatar: `https://i.pravatar.cc/150?u=${email}`
+                avatar: import.meta.env.BASE_URL + 'images/default-avatar.svg'
               };
               set({ user: newUser, isAuthenticated: true });
               resolve(newUser);

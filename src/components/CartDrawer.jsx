@@ -2,26 +2,24 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { X, ShoppingBag, Plus, Minus, Trash2 } from 'lucide-react';
 import useCartStore from '../store/cartStore';
+import useCartDrawerStore from '../store/cartDrawerStore';
 import { formatToman } from '../utils/formatCurrency';
+import { useTranslation } from 'react-i18next';
 
 export default function CartDrawer() {
-  const items        = useCartStore((s) => s.items);
-  const removeItem   = useCartStore((s) => s.removeItem);
-  const updateQty    = useCartStore((s) => s.updateQuantity);
-  const totalPrice   = useCartStore((s) =>
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'fa';
+
+  const items      = useCartStore((s) => s.items);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const updateQty  = useCartStore((s) => s.updateQuantity);
+  const totalPrice = useCartStore((s) =>
     s.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
   );
 
-  // Listen for open event dispatched by Navbar
-  const [open, setOpen] = useCartDrawerState();
+  const open        = useCartDrawerStore((s) => s.open);
+  const closeDrawer = useCartDrawerStore((s) => s.closeDrawer);
 
-  useEffect(() => {
-    const handler = () => setOpen(true);
-    window.addEventListener('open-cart-drawer', handler);
-    return () => window.removeEventListener('open-cart-drawer', handler);
-  }, [setOpen]);
-
-  // Prevent body scroll when drawer open
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -31,35 +29,33 @@ export default function CartDrawer() {
 
   return (
     <>
-      {/* Overlay */}
       <div
         className="drawer-overlay"
-        onClick={() => setOpen(false)}
+        onClick={closeDrawer}
         aria-hidden="true"
       />
 
-      {/* Panel */}
       <div
         className="drawer-panel flex flex-col"
         role="dialog"
         aria-modal="true"
-        aria-label="سبد خرید"
+        aria-label={t('cart.title')}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-pink-100">
           <div className="flex items-center gap-2">
             <ShoppingBag size={20} style={{ color: 'var(--color-primary)' }} />
-            <h2 className="font-bold text-base">سبد خرید</h2>
+            <h2 className="font-bold text-base">{t('cart.title')}</h2>
             {items.length > 0 && (
               <span className="badge badge-pink text-xs">
-                {items.length.toLocaleString('fa-IR')} محصول
+                {isRtl ? items.length.toLocaleString('fa-IR') : items.length} {t('cart.items', { count: isRtl ? items.length.toLocaleString('fa-IR') : items.length }).split(' ').slice(1).join(' ')}
               </span>
             )}
           </div>
           <button
-            onClick={() => setOpen(false)}
+            onClick={closeDrawer}
             className="p-2 rounded-xl hover:bg-pink-50 transition-colors"
-            aria-label="بستن سبد خرید"
+            aria-label={t('cart.title')}
           >
             <X size={18} />
           </button>
@@ -70,75 +66,75 @@ export default function CartDrawer() {
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-center">
               <ShoppingBag size={48} className="mb-4 opacity-20" style={{ color: 'var(--color-primary)' }} />
-              <p className="font-semibold text-sm mb-1">سبد خرید خالی است</p>
+              <p className="font-semibold text-sm mb-1">{t('cart.empty')}</p>
               <p className="text-xs" style={{ color: 'var(--color-muted)' }}>
-                محصولات مورد علاقه‌تان را اضافه کنید
+                {t('cart.empty_sub')}
               </p>
               <button
-                onClick={() => setOpen(false)}
+                onClick={closeDrawer}
                 className="btn-ghost mt-5 text-sm px-4 py-2"
               >
-                ادامه خرید
+                {t('cart.continue_shopping')}
               </button>
             </div>
           ) : (
             <ul className="flex flex-col gap-4">
-              {items.map(({ product, quantity }) => (
-                <li key={product.id} className="flex gap-3 animate-fade-in">
-                  {/* Thumbnail */}
-                  <Link
-                    to={`/product/${product.id}`}
-                    onClick={() => setOpen(false)}
-                    className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gray-50"
-                  >
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </Link>
+              {items.map(({ product, quantity }) => {
+                const productName = isRtl ? product.name : product.name_en;
+                const productBrand = isRtl ? product.brand : product.brand_en;
+                return (
+                  <li key={product.id} className="flex gap-3 animate-fade-in">
+                    <Link
+                      to={`/product/${product.id}`}
+                      onClick={closeDrawer}
+                      className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gray-50"
+                    >
+                      <img
+                        src={product.image}
+                        alt={productName}
+                        className="w-full h-full object-cover"
+                      />
+                    </Link>
 
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold line-clamp-2 mb-1" style={{ color: 'var(--color-text)' }}>
-                      {product.name}
-                    </p>
-                    <p className="text-xs mb-2" style={{ color: 'var(--color-muted)' }}>
-                      {product.brand}
-                    </p>
-                    <p className="price-main text-sm">{formatToman(product.price)}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold line-clamp-2 mb-1" style={{ color: 'var(--color-text)' }}>
+                        {productName}
+                      </p>
+                      <p className="text-xs mb-2" style={{ color: 'var(--color-muted)' }}>
+                        {productBrand}
+                      </p>
+                      <p className="price-main text-sm">{isRtl ? formatToman(product.price) : `${product.price.toLocaleString()} T`}</p>
 
-                    {/* Qty + remove */}
-                    <div className="flex items-center gap-2 mt-2">
-                      <button
-                        className="qty-btn"
-                        onClick={() => updateQty(product.id, quantity - 1)}
-                        aria-label="کاهش تعداد"
-                      >
-                        <Minus size={12} />
-                      </button>
-                      <span className="text-sm font-bold w-5 text-center">
-                        {quantity.toLocaleString('fa-IR')}
-                      </span>
-                      <button
-                        className="qty-btn"
-                        onClick={() => updateQty(product.id, quantity + 1)}
-                        aria-label="افزایش تعداد"
-                      >
-                        <Plus size={12} />
-                      </button>
-                      <button
-                        className="mr-auto p-1.5 rounded-lg hover:bg-red-50 transition-colors"
-                        onClick={() => removeItem(product.id)}
-                        aria-label={`حذف ${product.name}`}
-                        style={{ color: '#ef4444' }}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          className="qty-btn"
+                          onClick={() => updateQty(product.id, quantity - 1)}
+                          aria-label="-"
+                        >
+                          <Minus size={12} />
+                        </button>
+                        <span className="text-sm font-bold w-5 text-center">
+                          {isRtl ? quantity.toLocaleString('fa-IR') : quantity}
+                        </span>
+                        <button
+                          className="qty-btn"
+                          onClick={() => updateQty(product.id, quantity + 1)}
+                          aria-label="+"
+                        >
+                          <Plus size={12} />
+                        </button>
+                        <button
+                          className="mr-auto p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                          onClick={() => removeItem(product.id)}
+                          style={{ color: '#ef4444' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -148,36 +144,27 @@ export default function CartDrawer() {
           <div className="border-t border-pink-100 p-5 space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>
-                جمع کل
+                {t('cart.total')}
               </span>
-              <span className="price-main text-lg">{formatToman(totalPrice)}</span>
+              <span className="price-main text-lg">{isRtl ? formatToman(totalPrice) : `${totalPrice.toLocaleString()} T`}</span>
             </div>
             <Link
               to="/checkout"
-              onClick={() => setOpen(false)}
+              onClick={closeDrawer}
               className="btn-primary w-full text-center"
             >
-              پرداخت
+              {t('cart.checkout')}
             </Link>
             <Link
               to="/cart"
-              onClick={() => setOpen(false)}
+              onClick={closeDrawer}
               className="btn-ghost w-full text-center text-sm"
             >
-              مشاهده سبد خرید
+              {t('cart.title')}
             </Link>
           </div>
         )}
       </div>
     </>
   );
-}
-
-// Tiny internal state manager for the drawer open/close
-import { useState as useDrawerState } from 'react';
-let _setOpen;
-function useCartDrawerState() {
-  const [open, setOpen] = useDrawerState(false);
-  _setOpen = setOpen;
-  return [open, setOpen];
 }

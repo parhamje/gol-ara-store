@@ -3,8 +3,10 @@ import { SlidersHorizontal, X } from 'lucide-react';
 import FilterPanel from '../components/FilterPanel';
 import ProductList from '../components/ProductList';
 import { useProducts } from '../hooks/useProducts';
+import { useTranslation } from 'react-i18next';
 
 export default function ShopPage() {
+  const { t } = useTranslation();
   const [filterOpen, setFilterOpen] = useState(false);
   const products = useProducts();
 
@@ -14,10 +16,10 @@ export default function ShopPage() {
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-3xl font-black mb-2" style={{ color: 'var(--color-text)' }}>
-          فروشگاه
+          {t('nav.shop')}
         </h1>
         <p className="text-sm" style={{ color: 'var(--color-muted)' }}>
-          {products.length.toLocaleString('fa-IR')} محصول آرایشی و بهداشتی
+          {t('shop.subtitle', { count: products.length })}
         </p>
       </div>
 
@@ -30,7 +32,7 @@ export default function ShopPage() {
           aria-controls="filter-panel"
         >
           <SlidersHorizontal size={16} />
-          فیلتر و مرتب‌سازی
+          {t('filter.title')}
         </button>
       </div>
 
@@ -47,12 +49,12 @@ export default function ShopPage() {
             className="fixed inset-y-0 right-0 w-80 bg-white z-50 overflow-y-auto p-4 shadow-2xl lg:hidden animate-slide-in-left"
             role="dialog"
             aria-modal="true"
-            aria-label="فیلترها"
+            aria-label={t('filter.title')}
           >
             <div className="flex justify-between items-center mb-4">
-              <span className="font-bold">فیلترها</span>
+              <span className="font-bold">{t('filter.title')}</span>
               <button onClick={() => setFilterOpen(false)} className="p-2 rounded-xl hover:bg-pink-50"
-                      aria-label="بستن فیلترها">
+                      aria-label={t('filter.title')}>
                 <X size={18} />
               </button>
             </div>

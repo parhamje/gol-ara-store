@@ -1,8 +1,10 @@
 import { PackageOpen } from 'lucide-react';
 import ProductCard from './ProductCard';
 import { useProducts } from '../hooks/useProducts';
+import { useTranslation } from 'react-i18next';
 
 export default function ProductList() {
+  const { t } = useTranslation();
   const products = useProducts();
 
   if (products.length === 0) {
@@ -10,10 +12,10 @@ export default function ProductList() {
       <div className="flex flex-col items-center justify-center py-24 text-center animate-fade-in">
         <PackageOpen size={56} className="mb-4 opacity-30" style={{ color: 'var(--color-primary)' }} />
         <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--color-text)' }}>
-          محصولی یافت نشد
+          {t('filter.no_results')}
         </h3>
         <p className="text-sm" style={{ color: 'var(--color-muted)' }}>
-          فیلترها را تغییر دهید یا عبارت جستجو را اصلاح کنید
+          {t('filter.no_results_sub')}
         </p>
       </div>
     );

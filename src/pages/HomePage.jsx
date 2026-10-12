@@ -1,26 +1,29 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ShieldCheck, Truck, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ShieldCheck, Truck, RefreshCw } from 'lucide-react';
 import { products } from '../data/products';
-import ProductCard from '../components/ProductCard';
 import ProductCarousel from '../components/ProductCarousel';
 import HeroSlider from '../components/HeroSlider';
-
-const FEATURES = [
-  { icon: Truck,       title: 'ارسال سریع',       desc: 'تحویل در کمتر از ۲۴ ساعت در تهران' },
-  { icon: ShieldCheck, title: 'ضمانت اصالت',       desc: 'محصولات ۱۰۰٪ اصل با بارکد معتبر' },
-  { icon: RefreshCw,   title: 'مرجوعی آسان',       desc: 'بازگشت کالا تا ۷ روز بدون قید و شرط' },
-];
-
-const HERO_CATEGORIES = [
-  { label: 'رژ لب و مداد', href: '/shop', bg: '#fdf4f8', img: '/images/lipstick.png' },
-  { label: 'سایه چشم',     href: '/shop', bg: '#fdf4f8', img: '/images/eyeshadow.png' },
-  { label: 'کرم پودر',     href: '/shop', bg: '#fdf4f8', img: '/images/foundation.png' },
-  { label: 'مراقبت پوست',  href: '/shop', bg: '#fdf4f8', img: '/images/skincare.png' },
-  { label: 'لاک ناخن',     href: '/shop', bg: '#fdf4f8', img: '/images/nailpolish.png' },
-  { label: 'ابزار آرایشی', href: '/shop', bg: '#fdf4f8', img: '/images/tools.png' },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function HomePage() {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'fa';
+
+  const FEATURES = [
+    { icon: Truck,       title: t('home.fast_delivery'),       desc: t('home.fast_delivery_sub') },
+    { icon: ShieldCheck, title: t('home.auth_guarantee'),       desc: t('home.auth_guarantee_sub') },
+    { icon: RefreshCw,   title: t('home.easy_return'),       desc: t('home.easy_return_sub') },
+  ];
+
+  const HERO_CATEGORIES = [
+    { label: t('nav.lips') || 'Lips', href: '/shop', bg: '#fdf4f8', img: import.meta.env.BASE_URL + 'images/lipstick.png' },
+    { label: t('nav.eyes') || 'Eyes', href: '/shop', bg: '#fdf4f8', img: import.meta.env.BASE_URL + 'images/eyeshadow.png' },
+    { label: t('nav.face') || 'Face', href: '/shop', bg: '#fdf4f8', img: import.meta.env.BASE_URL + 'images/foundation.png' },
+    { label: t('nav.skincare') || 'Skincare', href: '/shop', bg: '#fdf4f8', img: import.meta.env.BASE_URL + 'images/skincare.png' },
+    { label: t('nav.nails') || 'Nails', href: '/shop', bg: '#fdf4f8', img: import.meta.env.BASE_URL + 'images/nailpolish.png' },
+    { label: t('nav.tools') || 'Tools', href: '/shop', bg: '#fdf4f8', img: import.meta.env.BASE_URL + 'images/tools.png' },
+  ];
+
   const featured = products.filter((p) => p.tags.includes('پرفروش')).slice(0, 10);
   const newest   = products.filter((p) => p.tags.includes('جدید')).slice(0, 10);
 
@@ -30,7 +33,7 @@ export default function HomePage() {
       <HeroSlider />
 
       {/* ── Trust Features ────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8" aria-label="ویژگی‌های فروشگاه">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8" aria-label="Features">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {FEATURES.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="flex items-center gap-5 p-6 rounded-[2rem] bg-gray-50 border border-gray-100 transition-transform hover:-translate-y-1">
@@ -47,9 +50,9 @@ export default function HomePage() {
       </section>
 
       {/* ── Categories ────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12" aria-label="دسته‌بندی‌ها">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12" aria-label="Categories">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-black text-gray-800">دسته‌بندی‌های محبوب</h2>
+          <h2 className="text-2xl font-black text-gray-800">{t('home.popular_categories')}</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {HERO_CATEGORIES.map((cat) => (
@@ -69,28 +72,30 @@ export default function HomePage() {
       </section>
 
       {/* ── Banner ────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8" aria-label="تبلیغ ویژه">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8" aria-label="Promo">
         <div
           className="rounded-[2.5rem] p-10 md:p-14 relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-sm border border-pink-100"
           style={{ background: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)' }}
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-0 end-0 w-64 h-64 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+          <div className="absolute bottom-0 start-0 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
           
-          <div className="relative z-10 text-center md:text-right mb-8 md:mb-0">
+          <div className="relative z-10 text-center md:text-start mb-8 md:mb-0">
             <div className="inline-block bg-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-4">
-              فقط تا پایان هفته
+              {t('home.limited_offer') || 'Limited Time Offer'}
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-pink-900 mb-3">
-              جشنواره تخفیف‌های طلایی
+              {t('home.golden_festival') || 'Golden Discount Festival'}
             </h2>
-            <p className="text-pink-800 text-lg">تا <span className="font-black text-2xl">۳۰٪ تخفیف</span> روی تمامی محصولات برندهای معتبر</p>
+            <p className="text-pink-800 text-lg">
+              {t('home.up_to_30') || 'Up to 30% OFF on all original products'}
+            </p>
           </div>
           
           <div className="relative z-10">
             <Link to="/shop" className="inline-flex items-center gap-2 bg-white text-pink-600 font-black px-8 py-4 rounded-2xl hover:bg-pink-50 transition-colors shadow-lg">
-              مشاهده تخفیف‌ها
-              <ArrowLeft size={18} />
+              {t('home.view_discounts') || 'View Discounts'}
+              {isRtl ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
             </Link>
           </div>
         </div>
@@ -98,11 +103,11 @@ export default function HomePage() {
 
       {/* ── Featured Products ─────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12" aria-labelledby="featured-title">
-        <div className="flex items-end justify-between mb-8 pr-2 border-r-4 border-pink-500 py-1">
-          <h2 id="featured-title" className="text-2xl font-black text-gray-800 mr-3">پرفروش‌ترین محصولات</h2>
+        <div className="flex items-end justify-between mb-8 pe-2 border-s-4 border-pink-500 py-1">
+          <h2 id="featured-title" className="text-2xl font-black text-gray-800 ms-3">{t('home.best_sellers')}</h2>
           <Link to="/shop" className="text-sm font-bold text-pink-500 hover:text-pink-600 transition-colors flex items-center gap-1">
-            مشاهده همه
-            <ArrowLeft size={16} />
+            {t('view_all')}
+            {isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </Link>
         </div>
         <ProductCarousel products={featured} />
@@ -110,11 +115,11 @@ export default function HomePage() {
 
       {/* ── Newest ────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 pb-20" aria-labelledby="newest-title">
-        <div className="flex items-end justify-between mb-8 pr-2 border-r-4 border-pink-500 py-1">
-          <h2 id="newest-title" className="text-2xl font-black text-gray-800 mr-3">تازه‌ترین‌ها در گل آرا</h2>
+        <div className="flex items-end justify-between mb-8 pe-2 border-s-4 border-pink-500 py-1">
+          <h2 id="newest-title" className="text-2xl font-black text-gray-800 ms-3">{t('home.newest')}</h2>
           <Link to="/shop" className="text-sm font-bold text-pink-500 hover:text-pink-600 transition-colors flex items-center gap-1">
-            مشاهده همه
-            <ArrowLeft size={16} />
+            {t('view_all')}
+            {isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
           </Link>
         </div>
         <ProductCarousel products={newest} />

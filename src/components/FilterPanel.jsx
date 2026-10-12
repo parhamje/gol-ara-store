@@ -1,22 +1,12 @@
 import { SlidersHorizontal, RotateCcw, ChevronDown } from 'lucide-react';
 import useFilterStore from '../store/filterStore';
 import { categories } from '../data/products';
-
-const SORT_OPTIONS = [
-  { value: 'default',   label: 'پیش‌فرض'      },
-  { value: 'price_asc', label: 'ارزان‌ترین'    },
-  { value: 'price_desc',label: 'گران‌ترین'     },
-  { value: 'rating',    label: 'بهترین امتیاز' },
-  { value: 'newest',    label: 'جدیدترین'      },
-];
-
-const RATINGS = [
-  { value: 0, label: 'همه'     },
-  { value: 4, label: '۴+ ستاره' },
-  { value: 4.5, label: '۴.۵+ ستاره' },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function FilterPanel({ resultCount }) {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'fa';
+
   const {
     category, setCategory,
     priceMin, priceMax, setPriceMin, setPriceMax,
@@ -24,6 +14,20 @@ export default function FilterPanel({ resultCount }) {
     sort, setSort,
     reset,
   } = useFilterStore();
+
+  const SORT_OPTIONS = [
+    { value: 'default',   label: t('filter.sort_options.default') },
+    { value: 'price_asc', label: t('filter.sort_options.price_asc') },
+    { value: 'price_desc',label: t('filter.sort_options.price_desc') },
+    { value: 'rating',    label: t('filter.sort_options.rating') },
+    { value: 'newest',    label: t('filter.sort_options.newest') },
+  ];
+
+  const RATINGS = [
+    { value: 0,   label: isRtl ? 'همه' : 'All' },
+    { value: 4,   label: isRtl ? '۴+ ستاره' : '4+ Stars' },
+    { value: 4.5, label: isRtl ? '۴.۵+ ستاره' : '4.5+ Stars' },
+  ];
 
   const hasActiveFilter =
     category !== 'all' || priceMin !== 0 || priceMax !== 1000000 || minRating > 0 || sort !== 'default';
@@ -37,17 +41,16 @@ export default function FilterPanel({ resultCount }) {
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={18} style={{ color: 'var(--color-primary)' }} />
-            <span className="font-semibold text-sm">فیلتر محصولات</span>
+            <span className="font-semibold text-sm">{t('filter.title')}</span>
           </div>
           {hasActiveFilter && (
             <button
               onClick={reset}
               className="flex items-center gap-1 text-xs hover:text-pink-600 transition-colors"
               style={{ color: 'var(--color-muted)' }}
-              aria-label="حذف فیلترها"
             >
               <RotateCcw size={12} />
-              حذف فیلتر
+              {t('filter.reset')}
             </button>
           )}
         </div>
@@ -55,21 +58,20 @@ export default function FilterPanel({ resultCount }) {
         {/* Results count */}
         <p className="text-xs mb-5 px-3 py-2 rounded-lg"
            style={{ background: 'rgba(212,87,138,.06)', color: 'var(--color-primary)' }}>
-          {resultCount.toLocaleString('fa-IR')} محصول یافت شد
+          {t('filter.results', { count: isRtl ? resultCount.toLocaleString('fa-IR') : resultCount })}
         </p>
 
-        {/* ── Sort ──────────────────────────────── */}
-        <section aria-labelledby="sort-label" className="mb-5">
-          <label id="sort-label" className="block text-xs font-semibold mb-2 uppercase tracking-wide"
+        {/* Sort */}
+        <section className="mb-5">
+          <label className="block text-xs font-semibold mb-2 uppercase tracking-wide"
                  style={{ color: 'var(--color-muted)' }}>
-            مرتب‌سازی
+            {t('filter.sort')}
           </label>
           <div className="relative">
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
               className="input-base text-sm appearance-none pe-8"
-              aria-label="مرتب‌سازی"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -80,43 +82,46 @@ export default function FilterPanel({ resultCount }) {
           </div>
         </section>
 
-        {/* ── Category ──────────────────────────── */}
-        <section aria-labelledby="cat-label" className="mb-5">
-          <p id="cat-label" className="text-xs font-semibold mb-2 uppercase tracking-wide"
+        {/* Category */}
+        <section className="mb-5">
+          <p className="text-xs font-semibold mb-2 uppercase tracking-wide"
              style={{ color: 'var(--color-muted)' }}>
-            دسته‌بندی
+            {t('filter.category')}
           </p>
           <div className="flex flex-col gap-1">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setCategory(cat.id)}
-                className={`text-right px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 ${
-                  category === cat.id
-                    ? 'text-white'
-                    : 'hover:bg-pink-50'
-                }`}
-                style={
-                  category === cat.id
-                    ? { background: 'var(--color-primary)' }
-                    : { color: 'var(--color-text)' }
-                }
-              >
-                {cat.label}
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const label = isRtl ? cat.label : cat.label_en;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setCategory(cat.id)}
+                  className={`text-right px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 ${
+                    category === cat.id
+                      ? 'text-white'
+                      : 'hover:bg-pink-50'
+                  }`}
+                  style={
+                    category === cat.id
+                      ? { background: 'var(--color-primary)' }
+                      : { color: 'var(--color-text)' }
+                  }
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
         </section>
 
-        {/* ── Price Range ───────────────────────── */}
-        <section aria-labelledby="price-label" className="mb-5">
-          <p id="price-label" className="text-xs font-semibold mb-3 uppercase tracking-wide"
+        {/* Price Range */}
+        <section className="mb-5">
+          <p className="text-xs font-semibold mb-3 uppercase tracking-wide"
              style={{ color: 'var(--color-muted)' }}>
-            محدوده قیمت (تومان)
+            {t('filter.price_range')}
           </p>
           <div className="flex gap-2">
             <div className="flex-1">
-              <label className="text-xs text-gray-400 mb-1 block">از</label>
+              <label className="text-xs text-gray-400 mb-1 block">{isRtl ? 'از' : 'From'}</label>
               <input
                 type="number"
                 className="input-base text-sm py-2"
@@ -125,11 +130,10 @@ export default function FilterPanel({ resultCount }) {
                 max={priceMax}
                 step={10000}
                 onChange={(e) => setPriceMin(Number(e.target.value))}
-                aria-label="حداقل قیمت"
               />
             </div>
             <div className="flex-1">
-              <label className="text-xs text-gray-400 mb-1 block">تا</label>
+              <label className="text-xs text-gray-400 mb-1 block">{isRtl ? 'تا' : 'To'}</label>
               <input
                 type="number"
                 className="input-base text-sm py-2"
@@ -138,7 +142,6 @@ export default function FilterPanel({ resultCount }) {
                 max={2000000}
                 step={10000}
                 onChange={(e) => setPriceMax(Number(e.target.value))}
-                aria-label="حداکثر قیمت"
               />
             </div>
           </div>
@@ -148,11 +151,11 @@ export default function FilterPanel({ resultCount }) {
           </div>
         </section>
 
-        {/* ── Rating ────────────────────────────── */}
-        <section aria-labelledby="rating-label">
-          <p id="rating-label" className="text-xs font-semibold mb-2 uppercase tracking-wide"
+        {/* Rating */}
+        <section>
+          <p className="text-xs font-semibold mb-2 uppercase tracking-wide"
              style={{ color: 'var(--color-muted)' }}>
-            حداقل امتیاز
+            {t('filter.min_rating')}
           </p>
           <div className="flex flex-col gap-1">
             {RATINGS.map((r) => (

@@ -1,8 +1,11 @@
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { User, Heart, Package, LogOut, Store } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function DashboardLayout() {
+  const { i18n } = useTranslation();
+  const isRtl = i18n.language === 'fa';
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
@@ -14,23 +17,25 @@ export default function DashboardLayout() {
   };
 
   const navItems = [
-    { to: '/dashboard', end: true, label: 'پروفایل کاربری', icon: User },
-    { to: '/dashboard/wishlist', label: 'علاقه‌مندی‌ها', icon: Heart },
-    { to: '/dashboard/orders', label: 'سفارشات من', icon: Package },
+    { to: '/dashboard', end: true, label: isRtl ? 'پروفایل کاربری' : 'Profile', icon: User },
+    { to: '/dashboard/wishlist', label: isRtl ? 'علاقه‌مندی‌ها' : 'Wishlist', icon: Heart },
+    { to: '/dashboard/orders', label: isRtl ? 'سفارشات من' : 'My Orders', icon: Package },
   ];
 
   return (
     <div className="min-h-screen bg-[#fdf4f8]" dir="rtl">
-      
+
       {/* Simple Top Bar */}
       <header className="bg-white/80 backdrop-blur-md border-b border-pink-100 shadow-sm sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <span className="text-2xl font-black text-pink-600 tracking-tighter pt-1" style={{ fontFamily: 'Lalezar, system-ui, sans-serif' }}>پنل کاربری گل آرا</span>
+          <span className="text-2xl font-black text-pink-600 tracking-tighter pt-1" style={{ fontFamily: 'Lalezar, system-ui, sans-serif' }}>
+            {isRtl ? 'پنل کاربری گل آرا' : 'Gol Ara Dashboard'}
+          </span>
           <button
             onClick={() => navigate('/')}
             className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-pink-600 transition-colors"
           >
-            بازگشت به فروشگاه
+            {isRtl ? 'بازگشت به فروشگاه' : 'Back to Store'}
             <Store size={16} />
           </button>
         </div>
@@ -39,7 +44,7 @@ export default function DashboardLayout() {
       {/* Main Layout */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-6">
-          
+
           {/* Rounded Sidebar */}
           <aside className="w-full md:w-72 flex-shrink-0 animate-slide-in-right">
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-50 sticky top-24 hover:shadow-md transition-shadow duration-500">
@@ -59,8 +64,8 @@ export default function DashboardLayout() {
                     end={item.end}
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 hover:scale-[1.02] ${
-                        isActive 
-                          ? 'bg-pink-500 text-white shadow-md shadow-pink-200 translate-x-[-4px]' 
+                        isActive
+                          ? 'bg-pink-500 text-white shadow-md shadow-pink-200 translate-x-[-4px]'
                           : 'text-gray-600 hover:bg-pink-50 hover:text-pink-600'
                       }`
                     }
@@ -81,7 +86,7 @@ export default function DashboardLayout() {
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-bold text-sm text-red-500 hover:bg-red-50 transition-colors"
                 >
                   <LogOut size={18} />
-                  خروج از حساب
+                  {isRtl ? 'خروج از حساب' : 'Logout'}
                 </button>
               </div>
             </div>

@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { CreditCard, Banknote, MapPin, Phone, User, ArrowLeft } from 'lucide-react';
+import { CreditCard, Banknote, MapPin, Phone, User, ArrowLeft, ArrowRight } from 'lucide-react';
 import useCartStore from '../store/cartStore';
 import { formatToman } from '../utils/formatCurrency';
+import { useTranslation } from 'react-i18next';
 
 export default function CheckoutPage() {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'fa';
+
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
   const total = useCartStore((s) =>
@@ -23,7 +27,6 @@ export default function CheckoutPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if cart is empty
   useEffect(() => {
     if (items.length === 0 && !isSubmitting) {
       navigate('/cart');
@@ -38,8 +41,7 @@ export default function CheckoutPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call
+
     setTimeout(() => {
       clearCart();
       const orderId = Math.random().toString(36).substring(2, 9).toUpperCase();
@@ -47,80 +49,82 @@ export default function CheckoutPage() {
     }, 1500);
   };
 
+  const formatPrice = (amount) => isRtl ? formatToman(amount) : `${amount.toLocaleString()} T`;
+
   if (items.length === 0 && !isSubmitting) return null;
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-      
+
       {/* Progress */}
       <div className="flex items-center justify-between mb-10 max-w-xl mx-auto animate-fade-in">
         <div className="progress-step active">
           <div className="step-dot">۱</div>
-          <span>سبد خرید</span>
+          <span>{t('checkout.step1')}</span>
         </div>
         <div className="progress-line active" />
         <div className="progress-step active">
           <div className="step-dot">۲</div>
-          <span>تکمیل خرید</span>
+          <span>{t('checkout.step2')}</span>
         </div>
         <div className="progress-line" />
         <div className="progress-step">
           <div className="step-dot">۳</div>
-          <span>تایید سفارش</span>
+          <span>{t('checkout.step3')}</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Form */}
         <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
-          
+
           {/* Section: Info */}
           <section className="p-6 rounded-2xl animate-fade-in-up"
                    style={{ background: 'white', boxShadow: 'var(--shadow-card)' }}>
             <h2 className="text-lg font-bold mb-5 flex items-center gap-2"
                 style={{ color: 'var(--color-primary)' }}>
               <User size={20} />
-              اطلاعات شخصی و ارسال
+              {t('checkout.personal_info')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--color-muted)' }}>
-                  نام و نام خانوادگی
+                  {t('checkout.name')}
                 </label>
                 <input required type="text" name="name" value={formData.name} onChange={handleChange}
-                       className="input-base" placeholder="مثال: علی احمدی" />
+                       className="input-base" placeholder={t('checkout.name_placeholder')} />
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--color-muted)' }}>
-                  شماره موبایل
+                  {t('checkout.phone')}
                 </label>
                 <div className="relative">
                   <Phone size={16} className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-400" />
                   <input required type="tel" name="phone" value={formData.phone} onChange={handleChange}
-                         className="input-base pr-10" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr" />
+                         className="input-base pr-10" placeholder={t('checkout.phone_placeholder')} dir="ltr" />
                 </div>
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--color-muted)' }}>
-                  آدرس دقیق
+                  {t('checkout.address')}
                 </label>
                 <div className="relative">
                   <MapPin size={16} className="absolute top-4 right-3 text-gray-400" />
                   <textarea required name="address" value={formData.address} onChange={handleChange}
                             className="input-base pr-10 min-h-[100px] resize-none py-3"
-                            placeholder="استان، شهر، خیابان، پلاک، واحد..." />
+                            placeholder={t('checkout.address_placeholder')} />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--color-muted)' }}>
-                  شهر
+                  {t('checkout.city')}
                 </label>
                 <input required type="text" name="city" value={formData.city} onChange={handleChange}
                        className="input-base" />
               </div>
               <div>
                 <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--color-muted)' }}>
-                  کد پستی
+                  {t('checkout.postal')}
                 </label>
                 <input type="text" name="postal" value={formData.postal} onChange={handleChange}
                        className="input-base" dir="ltr" />
@@ -133,7 +137,7 @@ export default function CheckoutPage() {
             <h2 className="text-lg font-bold mb-5 flex items-center gap-2"
                 style={{ color: 'var(--color-primary)' }}>
               <CreditCard size={20} />
-              روش پرداخت
+              {t('checkout.payment')}
             </h2>
             <div className="flex flex-col gap-3">
               <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors ${
@@ -144,11 +148,11 @@ export default function CheckoutPage() {
                        className="w-4 h-4 text-pink-600 accent-pink-600" />
                 <CreditCard size={20} style={{ color: formData.paymentMethod === 'online' ? 'var(--color-primary)' : 'var(--color-muted)' }} />
                 <div>
-                  <p className="font-semibold text-sm">پرداخت اینترنتی (درگاه زرین‌پال)</p>
-                  <p className="text-xs text-gray-500">پرداخت امن با تمامی کارت‌های عضو شتاب</p>
+                  <p className="font-semibold text-sm">{t('checkout.online')}</p>
+                  <p className="text-xs text-gray-500">{t('checkout.online_desc')}</p>
                 </div>
               </label>
-              
+
               <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors ${
                 formData.paymentMethod === 'cod' ? 'border-pink-500 bg-pink-50' : 'border-transparent bg-gray-50'
               }`}>
@@ -157,8 +161,8 @@ export default function CheckoutPage() {
                        className="w-4 h-4 text-pink-600 accent-pink-600" />
                 <Banknote size={20} style={{ color: formData.paymentMethod === 'cod' ? 'var(--color-primary)' : 'var(--color-muted)' }} />
                 <div>
-                  <p className="font-semibold text-sm">پرداخت در محل</p>
-                  <p className="text-xs text-gray-500">پرداخت هزینه هنگام تحویل سفارش (فقط تهران)</p>
+                  <p className="font-semibold text-sm">{t('checkout.cod')}</p>
+                  <p className="text-xs text-gray-500">{t('checkout.cod_desc')}</p>
                 </div>
               </label>
             </div>
@@ -167,7 +171,7 @@ export default function CheckoutPage() {
           <div className="hidden lg:block">
             <button type="submit" disabled={isSubmitting}
                     className="btn-primary w-full py-4 text-lg">
-              {isSubmitting ? 'در حال ثبت...' : 'ثبت و پرداخت نهایی'}
+              {isSubmitting ? t('checkout.submitting') : t('checkout.submit_final')}
             </button>
           </div>
         </form>
@@ -175,51 +179,54 @@ export default function CheckoutPage() {
         {/* Sidebar Summary */}
         <aside className="rounded-2xl p-6 sticky top-20 animate-fade-in-up"
                style={{ animationDelay: '0.2s', background: 'white', boxShadow: 'var(--shadow-card)', border: '1px solid rgba(212,87,138,.08)' }}>
-          <h2 className="font-bold text-base mb-5">خلاصه سفارش</h2>
-          
+          <h2 className="font-bold text-base mb-5">{t('cart.order_summary')}</h2>
+
           <div className="space-y-4 mb-6">
-            {items.map((item) => (
-              <div key={item.product.id} className="flex gap-3 items-center">
-                <div className="w-12 h-12 rounded-lg bg-gray-50 overflow-hidden flex-shrink-0">
-                  <img src={item.product.image} alt="" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold line-clamp-1">{item.product.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {item.quantity.toLocaleString('fa-IR')} عدد
+            {items.map((item) => {
+              const productName = isRtl ? item.product.name : item.product.name_en;
+              return (
+                <div key={item.product.id} className="flex gap-3 items-center">
+                  <div className="w-12 h-12 rounded-lg bg-gray-50 overflow-hidden flex-shrink-0">
+                    <img src={item.product.image} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold line-clamp-1">{productName}</p>
+                    <p className="text-xs text-gray-500">
+                      {isRtl ? item.quantity.toLocaleString('fa-IR') : item.quantity} {t('checkout.qty_unit')}
+                    </p>
+                  </div>
+                  <p className="text-xs font-semibold whitespace-nowrap">
+                    {formatPrice(item.product.price * item.quantity)}
                   </p>
                 </div>
-                <p className="text-xs font-semibold whitespace-nowrap">
-                  {formatToman(item.product.price * item.quantity)}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="space-y-3 mb-6 text-sm border-t pt-4" style={{ borderColor: '#e9d5e8' }}>
             <div className="flex justify-between">
-              <span style={{ color: 'var(--color-muted)' }}>مبلغ کل محصولات</span>
-              <span>{formatToman(total)}</span>
+              <span style={{ color: 'var(--color-muted)' }}>{t('checkout.product_subtotal')}</span>
+              <span>{formatPrice(total)}</span>
             </div>
             <div className="flex justify-between">
-              <span style={{ color: 'var(--color-muted)' }}>هزینه ارسال</span>
-              <span className="text-green-600 font-medium">رایگان</span>
+              <span style={{ color: 'var(--color-muted)' }}>{t('checkout.shipping')}</span>
+              <span className="text-green-600 font-medium">{t('checkout.free_shipping')}</span>
             </div>
             <div className="border-t pt-3 flex justify-between font-bold text-base"
                  style={{ borderColor: '#e9d5e8' }}>
-              <span>مبلغ نهایی</span>
-              <span className="price-main">{formatToman(total)}</span>
+              <span>{t('checkout.total')}</span>
+              <span className="price-main">{formatPrice(total)}</span>
             </div>
           </div>
 
           <button onClick={handleSubmit} disabled={isSubmitting}
                   className="btn-primary w-full py-3 lg:hidden mb-3">
-            {isSubmitting ? 'در حال پردازش...' : 'ثبت سفارش'}
+            {isSubmitting ? t('checkout.submitting2') : t('checkout.submit')}
           </button>
-          
+
           <Link to="/cart" className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-pink-600 transition-colors">
-            <ArrowLeft size={14} />
-            بازگشت به سبد خرید
+            {isRtl ? <ArrowLeft size={14} /> : <ArrowRight size={14} />}
+            {t('checkout.back_to_cart')}
           </Link>
         </aside>
       </div>

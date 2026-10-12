@@ -1,6 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 // Layouts & Shared
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -29,7 +39,8 @@ import AdminProducts from './pages/admin/AdminProducts';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/">
+      <ScrollToTop />
       <ToastContainer position="bottom-left" rtl={true} autoClose={3000} theme="light" />
       <CartDrawer />
       
